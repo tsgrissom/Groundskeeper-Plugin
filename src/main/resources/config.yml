@@ -1,4 +1,9 @@
-global_task_interval: 300
+global:
+  enabled: true
+  interval: 60
+  warn: true
+  warnBefore: 20
+
 protected_types:
   - DIAMOND
   - DIAMOND_BLOCK

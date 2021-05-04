@@ -1,11 +1,16 @@
 package io.github.t0xictyler.groundskeeper;
 
+import io.github.t0xictyler.groundskeeper.misc.Utils;
 import io.github.t0xictyler.groundskeeper.task.CleanupTask;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,15 +20,65 @@ public class GroundskeeperController {
 
     @NonNull @Getter
     private final GroundskeeperPlugin plugin;
+    private int warningTaskId, globalTaskId;
 
-    public GroundskeeperController(GroundskeeperPlugin plugin) {
+    protected GroundskeeperController(GroundskeeperPlugin plugin) {
         this.plugin = plugin;
 
-        new CleanupTask(plugin).runTaskTimer(plugin, 0, getGlobalTaskInterval() * 20);
+        load();
+    }
+
+    private void scheduleGlobalTask() {
+        if (isWarningGlobalTaskEnabled())
+            this.warningTaskId = new CleanupTask.CleanupWarnTask()
+                    .runTaskLater(plugin, (getGlobalTaskInterval() - getWarningTiming()) * 20)
+                    .getTaskId();
+
+        this.globalTaskId = new CleanupTask(plugin)
+                .runTaskTimer(plugin, 0, getGlobalTaskInterval() * 20)
+                .getTaskId();
+    }
+
+    protected void load() {
+        if (isGlobalTaskEnabled())
+            scheduleGlobalTask();
+    }
+
+    protected void unload() {
+        BukkitScheduler scheduler = Bukkit.getScheduler();
+
+        scheduler.cancelTask(warningTaskId);
+        scheduler.cancelTask(globalTaskId);
+    }
+
+    public void reload(CommandSender sender) {
+        sender.sendMessage("Reloading plugin...");
+
+        unload();
+        getPlugin().reloadConfig();
+        load();
+
+        sender.sendMessage(Utils.color("&aSuccessfully reloaded Groundskeeper!"));
+    }
+
+    private ConfigurationSection getGlobalSection() {
+        return getPlugin().getConfig().getConfigurationSection("global");
+    }
+
+    public boolean isGlobalTaskEnabled() {
+        return getGlobalSection().getBoolean("enabled");
     }
 
     public long getGlobalTaskInterval() {
-        return getPlugin().getConfig().getLong("global_task_interval", 300);
+        return getGlobalSection().getLong("interval", 300);
+    }
+
+    public boolean isWarningGlobalTaskEnabled() {
+        return getGlobalSection().getBoolean("warn", true);
+    }
+
+    public long getWarningTiming() {
+        return getGlobalSection().getLong("warnBefore", 20);
     }
 
     public List<Material> getProtectedTypes() {

@@ -49,15 +49,16 @@ public class GKWorld {
 
             Item item = (Item) entity;
             ItemStack is = item.getItemStack();
+            String name = Utils.normalizeEnumName(is.getType().name());
 
             if (protectedTypes.contains(is.getType())) {
-                Bukkit.getLogger().info("Protected a " + is.getType().name());
+                Bukkit.getLogger().info(String.format("Protected a %s", name));
                 continue;
             }
 
+            Bukkit.getLogger().info(String.format("Cleared %d %s", is.getAmount(), is.getType().name()));
             item.remove();
             count++;
-            Bukkit.getLogger().info("Cleared a " + is.getType().name());
         }
 
         return count;

@@ -11,6 +11,16 @@ import org.bukkit.scheduler.BukkitRunnable;
 @RequiredArgsConstructor
 public class CleanupTask extends BukkitRunnable {
 
+    public static class CleanupWarnTask extends BukkitRunnable {
+
+
+
+        @Override
+        public void run() {
+            Bukkit.broadcastMessage("&e&lGroundskeeper &6> &3Clearing ground items in &e%d &3seconds...");
+        }
+    }
+
     @NonNull @Getter
     private final GroundskeeperPlugin plugin;
 
