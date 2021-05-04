@@ -1,8 +1,10 @@
 package io.github.t0xictyler.groundskeeper;
 
+import io.github.t0xictyler.groundskeeper.command.GroundskeeperCommand;
 import io.github.t0xictyler.groundskeeper.task.CleanupTask;
 import lombok.Getter;
 import lombok.NonNull;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.annotation.command.Command;
@@ -46,6 +48,15 @@ public class GroundskeeperPlugin extends JavaPlugin {
         saveDefaultConfig();
 
         controller = new GroundskeeperController(this);
+
+        PluginCommand cmd = getCommand("groundskeeper");
+
+        if (cmd != null) {
+            GroundskeeperCommand command = new GroundskeeperCommand();
+
+            cmd.setExecutor(command);
+            cmd.setTabCompleter(command);
+        }
     }
 
     @Override
