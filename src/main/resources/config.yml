@@ -1,0 +1,6 @@
+global_task_interval: 300
+protected_types:
+  - DIAMOND
+  - DIAMOND_BLOCK
+  - EMERALD
+  - EMERALD_BLOCK
