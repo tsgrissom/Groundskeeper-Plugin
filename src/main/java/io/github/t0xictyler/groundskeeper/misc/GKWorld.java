@@ -38,7 +38,7 @@ public class GKWorld {
         this(controller, world.getName());
     }
 
-    public int clearGroundEntities() {
+    public int clearGroundEntities(boolean bypassProtection) {
         int count = 0;
         List<Material> protectedTypes = controller.getProtectedTypes();
 
@@ -51,12 +51,12 @@ public class GKWorld {
             ItemStack is = item.getItemStack();
             String name = Utils.normalizeEnumName(is.getType().name());
 
-            if (protectedTypes.contains(is.getType())) {
-                Bukkit.getLogger().info(String.format("Protected a %s", name));
+            if (protectedTypes.contains(is.getType()) && !bypassProtection) {
+                Bukkit.getLogger().info(String.format("Protected %d %s", is.getAmount(), name));
                 continue;
             }
 
-            Bukkit.getLogger().info(String.format("Cleared %d %s", is.getAmount(), is.getType().name()));
+            Bukkit.getLogger().info(String.format("Cleared %d %s", is.getAmount(), name));
             item.remove();
             count++;
         }

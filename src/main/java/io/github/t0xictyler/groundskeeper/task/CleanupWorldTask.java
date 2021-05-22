@@ -17,11 +17,15 @@ public class CleanupWorldTask extends BukkitRunnable {
     @NonNull @Getter
     private final String worldName;
 
+    private final boolean bypassProtection;
+
+    public boolean shouldBypassProtection() { return this.bypassProtection; }
+
     public GKWorld getWorld() {
         return new GKWorld(getPlugin().getController(), getWorldName());
     }
 
-    public CleanupWorldTask(GroundskeeperPlugin plugin, String worldName) {
+    public CleanupWorldTask(GroundskeeperPlugin plugin, String worldName, boolean bypassProtection) {
         World w = Bukkit.getWorld(worldName);
 
         if (w == null) {
@@ -30,15 +34,16 @@ public class CleanupWorldTask extends BukkitRunnable {
 
         this.plugin = plugin;
         this.worldName = worldName;
+        this.bypassProtection = bypassProtection;
     }
 
-    public CleanupWorldTask(GroundskeeperPlugin plugin, World world) {
-        this(plugin, world.getName());
+    public CleanupWorldTask(GroundskeeperPlugin plugin, World world, boolean bypassProtection) {
+        this(plugin, world.getName(), bypassProtection);
     }
 
     @Override
     public void run() {
-        int clearedGroundEntities = getWorld().clearGroundEntities();
+        int clearedGroundEntities = getWorld().clearGroundEntities(bypassProtection);
         String message = String.format("&e&lGroundskeeper &7&o<%s> &6Cleared &c%d &6ground items", getWorldName(), clearedGroundEntities);
 
         Bukkit.broadcastMessage(Utils.color(message));

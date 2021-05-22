@@ -4,7 +4,6 @@ import io.github.t0xictyler.groundskeeper.misc.Utils;
 import io.github.t0xictyler.groundskeeper.task.CleanupTask;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -29,12 +28,14 @@ public class GroundskeeperController {
     }
 
     private void scheduleGlobalTask() {
+        Bukkit.getLogger().info("Scheduling Groundskeeper global task...");
+
         if (isWarningGlobalTaskEnabled())
-            this.warningTaskId = new CleanupTask.CleanupWarnTask()
+            this.warningTaskId = new CleanupTask.CleanupWarnTask(getPlugin().getController())
                     .runTaskLater(plugin, (getGlobalTaskInterval() - getWarningTiming()) * 20)
                     .getTaskId();
 
-        this.globalTaskId = new CleanupTask(plugin)
+        this.globalTaskId = new CleanupTask(plugin, false)
                 .runTaskTimer(plugin, 0, getGlobalTaskInterval() * 20)
                 .getTaskId();
     }
@@ -47,8 +48,13 @@ public class GroundskeeperController {
     protected void unload() {
         BukkitScheduler scheduler = Bukkit.getScheduler();
 
-        scheduler.cancelTask(warningTaskId);
-        scheduler.cancelTask(globalTaskId);
+        if (warningTaskId > 0) {
+            scheduler.cancelTask(warningTaskId);
+        }
+
+        if (globalTaskId > 0 ) {
+            scheduler.cancelTask(globalTaskId);
+        }
     }
 
     public void reload(CommandSender sender) {
@@ -96,5 +102,13 @@ public class GroundskeeperController {
         }
 
         return protectedTypes;
+    }
+
+    public void addProtectedType(CommandSender sender, Material material) {
+
+    }
+
+    public void removeProtectedType(CommandSender sender, Material material) {
+        
     }
 }

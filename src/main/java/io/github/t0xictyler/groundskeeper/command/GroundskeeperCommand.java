@@ -37,6 +37,15 @@ public class GroundskeeperCommand implements TabExecutor {
         );
     }
 
+    public boolean hasFlag(String[] args, String shortArg, String longArg) {
+        for (String a : args) {
+            if (a.equalsIgnoreCase(String.format("-%s", shortArg)) || a.equalsIgnoreCase(String.format("--%s", longArg)))
+                return true;
+        }
+
+        return false;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("groundskeeper.command")) {
@@ -60,12 +69,18 @@ public class GroundskeeperCommand implements TabExecutor {
         } else if (Utils.equalsAny(arg1, "version", "v")) {
             sender.sendMessage(String.format("Groundskeeper v%s", plugin.getDescription().getVersion()));
         } else if (arg1.equalsIgnoreCase("force")) {
+            boolean clearProtected = hasFlag(args, "cp", "clear-protected");
+
             if (sender instanceof Player) {
                 Player p = (Player) sender;
 
-                new CleanupWorldTask(plugin, p.getWorld()).run();
+                if (hasFlag(args, "a", "all")) {
+                    new CleanupTask(plugin, clearProtected).run();
+                } else {
+                    new CleanupWorldTask(plugin, p.getWorld(), clearProtected).run();
+                }
             } else {
-                new CleanupTask(plugin).run();
+                new CleanupTask(plugin, clearProtected).run();
             }
         } else if (arg1.equalsIgnoreCase("protect")) {
 
@@ -73,7 +88,17 @@ public class GroundskeeperCommand implements TabExecutor {
 
         } else if (arg1.equalsIgnoreCase("global")) {
             if (args.length == 1) {
+                GroundskeeperController controller = getController();
+                String enabled = controller.isGlobalTaskEnabled() ? Utils.color("&aYes") : Utils.color("&cNo");
+                String interval = Utils.color(String.format("&b%ds", controller.getGlobalTaskInterval()));
+                List<String> global = Utils.color(
+                        "",
+                        " &e&lGlobal Task",
+                        "&7Enabled? " + enabled,
+                        "&7Interval: " + interval
+                );
 
+                global.forEach(sender::sendMessage);
             } else {
                 String arg2 = args[1];
 
