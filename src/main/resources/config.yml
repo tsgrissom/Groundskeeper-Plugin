@@ -4,8 +4,28 @@ global:
   warn: true
   warnBefore: 20
 
-protected_types:
+protectedTypes:
   - DIAMOND
   - DIAMOND_BLOCK
+  - DIAMOND_ORE
   - EMERALD
   - EMERALD_BLOCK
+  - EMERALD_ORE
+  - GOLD_NUGGET
+  - GOLD_INGOT
+  - GOLD_BLOCK
+  - GOLD_ORE
+  - REDSTONE
+  - REDSTONE_ORE
+  - GOLD_ORE
+  - IRON_ORE
+  - COAL
+  - COAL_ORE
+  - COAL_BLOCK
+  - DIAMOND_HELMET
+  - DIAMOND_CHESTPLATE
+  - DIAMOND_LEGGINGS
+  - DIAMOND_BOOTS
+  - APPLE
+  - GOLDEN_APPLE
+  - ENCHANTED_GOLDEN_APPLE

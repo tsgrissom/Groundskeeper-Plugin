@@ -3,6 +3,7 @@ package io.github.t0xictyler.groundskeeper.task;
 import io.github.t0xictyler.groundskeeper.misc.GKWorld;
 import io.github.t0xictyler.groundskeeper.GroundskeeperPlugin;
 import io.github.t0xictyler.groundskeeper.misc.Utils;
+import javafx.util.Pair;
 import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.Bukkit;
@@ -43,8 +44,10 @@ public class CleanupWorldTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        int clearedGroundEntities = getWorld().clearGroundEntities(bypassProtection);
-        String message = String.format("&e&lGroundskeeper &7&o<%s> &6Cleared &c%d &6ground items", getWorldName(), clearedGroundEntities);
+        Pair<Integer, Integer> cleared = getWorld().clearGroundEntities(bypassProtection);
+        int totalCleared = cleared.getKey();
+        int stacksCleared = cleared.getValue();
+        String message = String.format("&e&lGroundskeeper &7&o<%s> &6Cleared &c%d &6ground items", getWorldName(), totalCleared);
 
         Bukkit.broadcastMessage(Utils.color(message));
     }

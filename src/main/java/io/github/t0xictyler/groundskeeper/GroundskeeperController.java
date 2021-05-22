@@ -11,9 +11,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class GroundskeeperController {
 
@@ -21,8 +19,11 @@ public class GroundskeeperController {
     private final GroundskeeperPlugin plugin;
     private int warningTaskId, globalTaskId;
 
+    private Set<Material> protectedTypes;
+
     protected GroundskeeperController(GroundskeeperPlugin plugin) {
         this.plugin = plugin;
+        this.protectedTypes = new HashSet<>();
 
         load();
     }
@@ -31,7 +32,7 @@ public class GroundskeeperController {
         Bukkit.getLogger().info("Scheduling Groundskeeper global task...");
 
         if (isWarningGlobalTaskEnabled())
-            this.warningTaskId = new CleanupTask.CleanupWarnTask(getPlugin().getController())
+            this.warningTaskId = new CleanupTask.CleanupWarnTask(plugin)
                     .runTaskLater(plugin, (getGlobalTaskInterval() - getWarningTiming()) * 20)
                     .getTaskId();
 
@@ -40,9 +41,29 @@ public class GroundskeeperController {
                 .getTaskId();
     }
 
+    private void loadProtectedTypes() {
+        if (protectedTypes == null) {
+            protectedTypes = new HashSet<>();
+        }
+
+        for (String s : plugin.getConfig().getStringList("protectedTypes")) {
+            Material m = Material.getMaterial(s);
+
+            if (m == null) {
+                Bukkit.getLogger().warning(String.format("Unknown Material \"%s\" for protected type", s));
+            } else {
+                protectedTypes.add(m);
+            }
+        }
+
+        Bukkit.getLogger().info(String.format("Loaded %d protected types", getProtectedTypes().size()));
+    }
+
     protected void load() {
         if (isGlobalTaskEnabled())
             scheduleGlobalTask();
+
+        loadProtectedTypes();
     }
 
     protected void unload() {
@@ -55,6 +76,8 @@ public class GroundskeeperController {
         if (globalTaskId > 0 ) {
             scheduler.cancelTask(globalTaskId);
         }
+
+        protectedTypes.clear();
     }
 
     public void reload(CommandSender sender) {
@@ -76,7 +99,7 @@ public class GroundskeeperController {
     }
 
     public long getGlobalTaskInterval() {
-        return getGlobalSection().getLong("interval", 300);
+        return getGlobalSection().getLong("interval", 60);
     }
 
     public boolean isWarningGlobalTaskEnabled() {
@@ -90,11 +113,7 @@ public class GroundskeeperController {
     public List<Material> getProtectedTypes() {
         FileConfiguration config = getPlugin().getConfig();
 
-        if (!config.isSet("protected_types")) {
-            return Arrays.asList(Material.DIAMOND, Material.DIAMOND_BLOCK, Material.EMERALD, Material.EMERALD_BLOCK);
-        }
-
-        List<String> strList = config.getStringList("protected_types");
+        List<String> strList = config.getStringList("protectedTypes");
         List<Material> protectedTypes = new ArrayList<>();
 
         for (String s : strList) {
@@ -105,10 +124,26 @@ public class GroundskeeperController {
     }
 
     public void addProtectedType(CommandSender sender, Material material) {
+        if (getProtectedTypes().contains(material)) {
+            sender.sendMessage(Utils.color(String.format("&cMaterial &4\"%s\" &cis already protected", material.name())));
 
+            return;
+        }
+
+        // TODO Add protected type to config and refresh HashSet
+
+        sender.sendMessage(Utils.color(String.format("&6Material &c\"%s\" &6will now be protected from being cleared", material.name())));
     }
 
     public void removeProtectedType(CommandSender sender, Material material) {
-        
+        if (!getProtectedTypes().contains(material)) {
+            sender.sendMessage(Utils.color(String.format("&cMaterial &4\"%s\" &cis not protected", material.name())));
+
+            return;
+        }
+
+        // TODO Remove protected type from config and refresh HashSet
+
+        sender.sendMessage(Utils.color(String.format("&6Material &c\"%s\" &6will no longer be protected from being cleared", material.name())));
     }
 }

@@ -1,6 +1,7 @@
 package io.github.t0xictyler.groundskeeper.misc;
 
 import io.github.t0xictyler.groundskeeper.GroundskeeperController;
+import javafx.util.Pair;
 import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.Bukkit;
@@ -38,8 +39,8 @@ public class GKWorld {
         this(controller, world.getName());
     }
 
-    public int clearGroundEntities(boolean bypassProtection) {
-        int count = 0;
+    public Pair<Integer, Integer> clearGroundEntities(boolean bypassProtection) {
+        int totalCount = 0, stackCount = 0;
         List<Material> protectedTypes = controller.getProtectedTypes();
 
         for (Entity entity : getWorld().getEntities()) {
@@ -56,11 +57,13 @@ public class GKWorld {
                 continue;
             }
 
+            totalCount += is.getAmount();
+
             Bukkit.getLogger().info(String.format("Cleared %d %s", is.getAmount(), name));
             item.remove();
-            count++;
+            stackCount++;
         }
 
-        return count;
+        return new Pair<>(totalCount, stackCount);
     }
 }
