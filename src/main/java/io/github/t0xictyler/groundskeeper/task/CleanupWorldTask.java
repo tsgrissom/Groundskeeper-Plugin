@@ -1,5 +1,7 @@
 package io.github.t0xictyler.groundskeeper.task;
 
+import com.google.common.collect.ImmutableMap;
+import io.github.t0xictyler.groundskeeper.GroundskeeperController;
 import io.github.t0xictyler.groundskeeper.misc.GKWorld;
 import io.github.t0xictyler.groundskeeper.GroundskeeperPlugin;
 import io.github.t0xictyler.groundskeeper.misc.Utils;
@@ -9,6 +11,8 @@ import lombok.NonNull;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.Map;
 
 public class CleanupWorldTask extends BukkitRunnable {
 
@@ -44,11 +48,16 @@ public class CleanupWorldTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        Pair<Integer, Integer> cleared = getWorld().clearGroundEntities(bypassProtection);
+        GroundskeeperController controller = getPlugin().getController();
+        Pair<Integer, Integer> cleared = getWorld().clearGroundEntities(shouldBypassProtection());
         int totalCleared = cleared.getKey();
         int stacksCleared = cleared.getValue();
-        String message = String.format("&e&lGroundskeeper &7&o<%s> &6Cleared &c%d &6ground items", getWorldName(), totalCleared);
+        Map<String, String> replace = ImmutableMap.of(
+                "%totalCleared%", String.valueOf(totalCleared),
+                "%stacksCleared%", String.valueOf(stacksCleared),
+                "%world%", getWorldName()
+                );
 
-        Bukkit.broadcastMessage(Utils.color(message));
+        Bukkit.broadcastMessage(controller.getMessage("cleared", replace));
     }
 }

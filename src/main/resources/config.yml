@@ -1,9 +1,17 @@
+# Global task settings
 global:
+  # Whether or not to clear all worlds on an interval
   enabled: true
+  # How often to clear all worlds in seconds
   interval: 60
+  # Whether or not to warn players that the ground is going to be cleared
   warn: true
+  # How many seconds before clearing the ground to warn players
   warnBefore: 20
 
+# Which Materials to protect from being cleared
+# Bypass this with /gk force --clear-protected
+# Materials: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 protectedTypes:
   - DIAMOND
   - DIAMOND_BLOCK
@@ -18,7 +26,11 @@ protectedTypes:
   - REDSTONE
   - REDSTONE_ORE
   - GOLD_ORE
+  - GOLD_INGOT
+  - GOLD_NUGGET
   - IRON_ORE
+  - IRON_INGOT
+  - IRON_BLOCK
   - COAL
   - COAL_ORE
   - COAL_BLOCK
@@ -28,4 +40,15 @@ protectedTypes:
   - DIAMOND_BOOTS
   - APPLE
   - GOLDEN_APPLE
-  - ENCHANTED_GOLDEN_APPLE
+
+# Configure which plugins Groundskeeper will integrate with
+integrations:
+  # Whether or not to integrate with NathanWolf's Magic plugin to protect wands from being cleared
+  magic: true
+
+# Configure user-facing plugin messages
+messages:
+  # Available placeholders: %time%
+  warning: "&e&lGroundskeeper &6> &3Clearing ground items in &e%time% &3seconds..."
+  # Available placeholders: %totalCleared%, %stacksCleared%, %world%
+  cleared: "&e&lGroundskeeper &7&o<%world%> &6Cleared &c%totalCleared% &6ground items"

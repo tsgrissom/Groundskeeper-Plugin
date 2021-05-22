@@ -1,5 +1,6 @@
 package io.github.t0xictyler.groundskeeper.task;
 
+import com.google.common.collect.ImmutableMap;
 import io.github.t0xictyler.groundskeeper.GroundskeeperController;
 import io.github.t0xictyler.groundskeeper.GroundskeeperPlugin;
 import io.github.t0xictyler.groundskeeper.misc.Utils;
@@ -9,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.Map;
 
 public class CleanupTask extends BukkitRunnable {
 
@@ -22,9 +25,11 @@ public class CleanupTask extends BukkitRunnable {
         public void run() {
             GroundskeeperController controller = plugin.getController();
             long in = controller.getGlobalTaskInterval() - controller.getWarningTiming();
-            String message = String.format("&e&lGroundskeeper &6> &3Clearing ground items in &e%d &3seconds...", in);
+            Map<String, String> replace = ImmutableMap.of(
+                    "%time%", String.valueOf(in)
+            );
 
-            Bukkit.broadcastMessage(Utils.color(message));
+            Bukkit.broadcastMessage(controller.getMessage("warning", replace));
         }
     }
 

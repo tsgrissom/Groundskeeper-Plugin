@@ -12,6 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GroundskeeperController {
 
@@ -34,11 +35,11 @@ public class GroundskeeperController {
 
         if (isWarningGlobalTaskEnabled())
             this.warningTaskId = new CleanupTask.CleanupWarnTask(plugin)
-                    .runTaskLater(plugin, (getGlobalTaskInterval() - getWarningTiming()) * 20)
+                    .runTaskTimer(plugin, (getGlobalTaskInterval() - getWarningTiming()) * 20, (getGlobalTaskInterval() - getWarningTiming()) * 20)
                     .getTaskId();
 
         this.globalTaskId = new CleanupTask(plugin, false)
-                .runTaskTimer(plugin, 0, getGlobalTaskInterval() * 20)
+                .runTaskTimer(plugin, getGlobalTaskInterval() * 20, getGlobalTaskInterval() * 20)
                 .getTaskId();
     }
 
@@ -111,17 +112,32 @@ public class GroundskeeperController {
         return getGlobalSection().getLong("warnBefore", 20);
     }
 
-    public List<Material> getProtectedTypesList() {
-        FileConfiguration config = getPlugin().getConfig();
+    public boolean shouldIntegrateWithMagic() {
+        return getPlugin().getConfig().getBoolean("integrations.magic", true);
+    }
 
-        List<String> strList = config.getStringList("protectedTypes");
-        List<Material> protectedTypes = new ArrayList<>();
+    public String getMessage(String key) {
+        ConfigurationSection cs = getPlugin().getConfig().getConfigurationSection("messages");
 
-        for (String s : strList) {
-            protectedTypes.add(Material.getMaterial(s));
+        if (cs == null) {
+            return Utils.color("&cGroundskeeper is improperly configured: No messages section.");
         }
 
-        return protectedTypes;
+        if (!cs.isSet(key)) {
+            return Utils.color(String.format("&cGroundskeeper is improperly configured: No message found for key &4\"%s\"", key));
+        }
+
+        return Utils.color(cs.getString(key));
+    }
+
+    public String getMessage(String key, Map<String, String> replace) {
+        String m = getMessage(key);
+
+        for (Map.Entry<String, String> entry : replace.entrySet()) {
+            m = m.replace(entry.getKey(), entry.getValue());
+        }
+
+        return m;
     }
 
     public void addProtectedType(CommandSender sender, Material material) {
@@ -131,7 +147,14 @@ public class GroundskeeperController {
             return;
         }
 
-        // TODO Add protected type to config and refresh HashSet
+        getProtectedTypes().add(material);
+
+        FileConfiguration conf = getPlugin().getConfig();
+
+        conf.set("protectedTypes", getProtectedTypes().stream().map(Enum::name).collect(Collectors.toList()));
+        getPlugin().saveConfig();
+        getProtectedTypes().clear();
+        loadProtectedTypes();
 
         sender.sendMessage(Utils.color(String.format("&6Material &c\"%s\" &6will now be protected from being cleared", material.name())));
     }
@@ -143,7 +166,14 @@ public class GroundskeeperController {
             return;
         }
 
-        // TODO Remove protected type from config and refresh HashSet
+        getProtectedTypes().remove(material);
+
+        FileConfiguration conf = getPlugin().getConfig();
+
+        conf.set("protectedTypes", getProtectedTypes().stream().map(Enum::name).collect(Collectors.toList()));
+        getPlugin().saveConfig();
+        getProtectedTypes().clear();
+        loadProtectedTypes();
 
         sender.sendMessage(Utils.color(String.format("&6Material &c\"%s\" &6will no longer be protected from being cleared", material.name())));
     }
