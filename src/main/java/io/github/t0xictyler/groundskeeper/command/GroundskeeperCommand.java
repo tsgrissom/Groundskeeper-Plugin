@@ -8,12 +8,14 @@ import io.github.t0xictyler.groundskeeper.task.CleanupWorldTask;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Material;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 public class GroundskeeperCommand implements TabExecutor {
@@ -37,7 +39,11 @@ public class GroundskeeperCommand implements TabExecutor {
                 "   &9-a &8or &9--all",
                 "     &7Force all worlds to be cleared",
                 "   &9-cp &8or &9--clear-protected",
-                "     &7Bypass protected types"
+                "     &7Bypass protected types",
+                " &6> &7/gk global &8- &3Modify global task settings",
+                " &6> &7/gk protected &8- &3List protected materials",
+                " &6> &7/gk protect <material> &8- &3Protect a material",
+                " &6> &7/gk unprotect <material> &8- &3Unprotect a material"
         );
     }
 
@@ -86,12 +92,40 @@ public class GroundskeeperCommand implements TabExecutor {
             } else {
                 new CleanupTask(plugin, clearProtected).run();
             }
+        } else if (arg1.equalsIgnoreCase("protected")) {
+            Set<Material> protectedTypes = getController().getProtectedTypes();
+
+            for (Material m : getController().getProtectedTypes()) {
+                sender.sendMessage(Utils.color(String.format(" &6> &e%s", m.name())));
+            }
+
+            sender.sendMessage(Utils.color(String.format("&eGroundskeeper &6is protecting &c%d &6materials from being cleared", protectedTypes.size())));
         } else if (arg1.equalsIgnoreCase("protect")) {
-            sender.sendMessage("Protect a type");
-            // TODO Validate material and pass to controller
+            if (args.length == 1) {
+                sender.sendMessage(Utils.color(" &4&lX &cPlease specify a material to protect"));
+            } else {
+                String arg2 = args[1];
+                Material m = Material.getMaterial(arg2);
+
+                if (m == null) {
+                    sender.sendMessage(Utils.color(String.format(" &4&lX &cUnknown material &4\"%s\"", arg2)));
+                } else {
+                    getController().addProtectedType(sender, m);
+                }
+            }
         } else if (arg1.equalsIgnoreCase("unprotect")) {
-            sender.sendMessage("Unprotect a type");
-            // TODO Validate material and pass to controller
+            if (args.length == 1) {
+                sender.sendMessage(Utils.color(" &4&lX &cPlease specify a material to unprotect"));
+            } else {
+                String arg2 = args[1];
+                Material m = Material.getMaterial(arg2);
+
+                if (m == null) {
+                    sender.sendMessage(Utils.color(String.format(" &4&lX &cUnknown material &4\"%s\"", arg2)));
+                } else {
+                    getController().removeProtectedType(sender, m);
+                }
+            }
         } else if (arg1.equalsIgnoreCase("global")) {
             if (args.length == 1) {
                 GroundskeeperController controller = getController();
@@ -134,7 +168,7 @@ public class GroundskeeperCommand implements TabExecutor {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         List<String> tab = new ArrayList<>();
-        List<String> subs = Arrays.asList("help", "version", "force", "reload", "global", "protect", "unprotect");
+        List<String> subs = Arrays.asList("help", "version", "force", "reload", "global", "protected", "protect", "unprotect");
         List<String> globalSubs = Arrays.asList("interval", "toggle");
 
         if (args.length == 0) {

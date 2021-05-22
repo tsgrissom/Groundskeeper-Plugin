@@ -19,6 +19,7 @@ public class GroundskeeperController {
     private final GroundskeeperPlugin plugin;
     private int warningTaskId, globalTaskId;
 
+    @Getter
     private Set<Material> protectedTypes;
 
     protected GroundskeeperController(GroundskeeperPlugin plugin) {
@@ -110,7 +111,7 @@ public class GroundskeeperController {
         return getGlobalSection().getLong("warnBefore", 20);
     }
 
-    public List<Material> getProtectedTypes() {
+    public List<Material> getProtectedTypesList() {
         FileConfiguration config = getPlugin().getConfig();
 
         List<String> strList = config.getStringList("protectedTypes");
@@ -125,7 +126,7 @@ public class GroundskeeperController {
 
     public void addProtectedType(CommandSender sender, Material material) {
         if (getProtectedTypes().contains(material)) {
-            sender.sendMessage(Utils.color(String.format("&cMaterial &4\"%s\" &cis already protected", material.name())));
+            sender.sendMessage(Utils.color(String.format(" &4&lX &cMaterial &4\"%s\" &cis already protected", material.name())));
 
             return;
         }
@@ -137,7 +138,7 @@ public class GroundskeeperController {
 
     public void removeProtectedType(CommandSender sender, Material material) {
         if (!getProtectedTypes().contains(material)) {
-            sender.sendMessage(Utils.color(String.format("&cMaterial &4\"%s\" &cis not protected", material.name())));
+            sender.sendMessage(Utils.color(String.format(" &4&lX &cMaterial &4\"%s\" &cis not protected", material.name())));
 
             return;
         }

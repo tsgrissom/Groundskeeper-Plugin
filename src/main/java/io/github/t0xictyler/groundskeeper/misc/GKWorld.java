@@ -12,6 +12,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Set;
 
 public class GKWorld {
 
@@ -41,7 +42,7 @@ public class GKWorld {
 
     public Pair<Integer, Integer> clearGroundEntities(boolean bypassProtection) {
         int totalCount = 0, stackCount = 0;
-        List<Material> protectedTypes = controller.getProtectedTypes();
+        Set<Material> protectedTypes = controller.getProtectedTypes();
 
         for (Entity entity : getWorld().getEntities()) {
             if (!(entity instanceof Item)) {
