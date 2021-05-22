@@ -33,7 +33,11 @@ public class GroundskeeperCommand implements TabExecutor {
                 " &6> &7/gk ? &8- &3View this help info",
                 " &6> &7/gk reload &8- &3Reload the plugin",
                 " &6> &7/gk version &8- &3View plugin version",
-                " &6> &7/gk force &8- &3Force the ground to be cleared"
+                " &6> &7/gk force &8- &3Force the ground to be cleared",
+                "   &9-a &8or &9--all",
+                "     &7Force all worlds to be cleared",
+                "   &9-cp &8or &9--clear-protected",
+                "     &7Bypass protected types"
         );
     }
 
@@ -83,9 +87,11 @@ public class GroundskeeperCommand implements TabExecutor {
                 new CleanupTask(plugin, clearProtected).run();
             }
         } else if (arg1.equalsIgnoreCase("protect")) {
-
+            sender.sendMessage("Protect a type");
+            // TODO Validate material and pass to controller
         } else if (arg1.equalsIgnoreCase("unprotect")) {
-
+            sender.sendMessage("Unprotect a type");
+            // TODO Validate material and pass to controller
         } else if (arg1.equalsIgnoreCase("global")) {
             if (args.length == 1) {
                 GroundskeeperController controller = getController();
@@ -119,7 +125,7 @@ public class GroundskeeperCommand implements TabExecutor {
                 }
             }
         } else {
-            sender.sendMessage(Utils.color(" &4&lX &cUnknown sub-command! Do &e/gk ? &cfor help."));
+            sender.sendMessage(Utils.color(" &4&lX &cUnknown sub-command! Do &e/gk ?&c for help."));
         }
 
         return true;
