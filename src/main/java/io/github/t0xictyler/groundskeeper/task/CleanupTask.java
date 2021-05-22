@@ -3,7 +3,6 @@ package io.github.t0xictyler.groundskeeper.task;
 import com.google.common.collect.ImmutableMap;
 import io.github.t0xictyler.groundskeeper.GroundskeeperController;
 import io.github.t0xictyler.groundskeeper.GroundskeeperPlugin;
-import io.github.t0xictyler.groundskeeper.misc.Utils;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

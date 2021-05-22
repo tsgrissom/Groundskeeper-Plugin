@@ -2,7 +2,6 @@ package io.github.t0xictyler.groundskeeper;
 
 import io.github.t0xictyler.groundskeeper.command.GroundskeeperCommand;
 import lombok.Getter;
-import lombok.NonNull;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.annotation.command.Command;
