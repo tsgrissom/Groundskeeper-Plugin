@@ -56,6 +56,11 @@ public class CleanupWorldTask extends BukkitRunnable {
                 "%world%", getWorldName()
                 );
 
+        if (report.isEmpty()) {
+            Bukkit.getLogger().info(String.format("Tried to clean up world \"%s\" but there were no items cleared", getWorldName()));
+            return;
+        }
+
         Bukkit.broadcastMessage(controller.getMessage("cleared", replace));
     }
 }
