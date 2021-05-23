@@ -8,9 +8,11 @@ import io.github.t0xictyler.groundskeeper.task.CleanupWorldTask;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.*;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -48,13 +50,21 @@ public class GroundskeeperCommand implements TabExecutor {
         );
     }
 
-    public boolean hasFlag(String[] args, String shortArg, String longArg) {
+    private boolean hasFlag(String[] args, String shortArg, String longArg) {
         for (String a : args) {
             if (a.equalsIgnoreCase(String.format("-%s", shortArg)) || a.equalsIgnoreCase(String.format("--%s", longArg)))
                 return true;
         }
 
         return false;
+    }
+
+    private void performCommand(CommandSender sender, String cmd) {
+        if (sender instanceof Player) {
+            ((Player) sender).performCommand(cmd);
+        } else if (sender instanceof ConsoleCommandSender) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+        }
     }
 
     @Override
@@ -161,17 +171,55 @@ public class GroundskeeperCommand implements TabExecutor {
                         try {
                             int i = Integer.parseInt(args[2]);
 
-                            sender.sendMessage("Parsed interval " + i);
+                            FileConfiguration conf = plugin.getConfig();
 
-                            // TODO Set interval and reset tasks
+                            conf.set("global.interval", i);
+
+                            plugin.saveConfig();
+
+                            getController().cancelTasks();
+                            getController().scheduleGlobalTask();
+
+                            sender.sendMessage(Utils.color(String.format("&eGroundskeeper &6global task will now repeat every &c%ds&6.", i)));
                         } catch (NumberFormatException ignored) {
                             sender.sendMessage(Utils.color(" &4&lX &cPlease enter a valid time in seconds."));
                         }
                     }
                 } else if (arg2.equalsIgnoreCase("toggle")) {
-                    sender.sendMessage("Toggle global task");
-                    // TODO Toggle task and reset
-                } // TODO /gk g enable, /gk g disable
+                    if (getController().isGlobalTaskEnabled()) {
+                        performCommand(sender, "gk g disable");
+                    } else {
+                        performCommand(sender, "gk g enable");
+                    }
+                } else if (arg2.equalsIgnoreCase("enable")) {
+                    if (getController().isGlobalTaskEnabled()) {
+                        sender.sendMessage(Utils.color(" &4&lX &cGlobal task is already enabled"));
+                        return true;
+                    }
+
+                    FileConfiguration conf = plugin.getConfig();
+
+                    conf.set("global.enabled", true);
+
+                    plugin.saveConfig();
+
+                    getController().scheduleGlobalTask();
+                    sender.sendMessage(Utils.color(String.format("&eGroundskeeper &6global task has been &aenabled&6. Will repeat every &c%ds&6.", getController().getGlobalTaskInterval())));
+                } else if (arg2.equalsIgnoreCase("disable")) {
+                    if (!getController().isGlobalTaskEnabled()) {
+                        sender.sendMessage(Utils.color(" &4&lX &cGlobal task is already disabled"));
+                        return true;
+                    }
+
+                    FileConfiguration conf = plugin.getConfig();
+
+                    conf.set("global.enabled", false);
+
+                    plugin.saveConfig();
+
+                    getController().cancelTasks();
+                    sender.sendMessage(Utils.color("&eGroundskeeper &6global task has been &cdisabled&6."));
+                }
             }
         } else {
             sender.sendMessage(Utils.color(" &4&lX &cUnknown sub-command! Do &e/gk ?&c for help."));
@@ -185,6 +233,8 @@ public class GroundskeeperCommand implements TabExecutor {
         List<String> tab = new ArrayList<>();
         List<String> subs = Arrays.asList("help", "version", "force", "reload", "global", "protected", "protect", "unprotect");
         List<String> globalSubs = Arrays.asList("interval", "toggle");
+
+        // TODO Finish tab completion
 
         if (args.length == 0) {
             tab.addAll(subs);

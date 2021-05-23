@@ -5,7 +5,6 @@ import io.github.t0xictyler.groundskeeper.GroundskeeperController;
 import io.github.t0xictyler.groundskeeper.misc.CleanupReport;
 import io.github.t0xictyler.groundskeeper.misc.GKWorld;
 import io.github.t0xictyler.groundskeeper.GroundskeeperPlugin;
-import javafx.util.Pair;
 import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.Bukkit;

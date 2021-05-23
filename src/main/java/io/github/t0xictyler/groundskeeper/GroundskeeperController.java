@@ -37,7 +37,7 @@ public class GroundskeeperController {
         load();
     }
 
-    private void scheduleGlobalTask() {
+    public void scheduleGlobalTask() {
         Bukkit.getLogger().info("Scheduling Groundskeeper global task...");
 
         if (isWarningGlobalTaskEnabled())
@@ -48,6 +48,16 @@ public class GroundskeeperController {
         this.globalTaskId = new CleanupTask(plugin, false)
                 .runTaskTimer(plugin, getGlobalTaskInterval() * 20, getGlobalTaskInterval() * 20)
                 .getTaskId();
+    }
+
+    public void cancelTasks() {
+        BukkitScheduler scheduler = Bukkit.getScheduler();
+
+        if (warningTaskId > 0)
+            scheduler.cancelTask(warningTaskId);
+
+        if (globalTaskId > 0 )
+            scheduler.cancelTask(globalTaskId);
     }
 
     private void loadProtectedTypes() {
@@ -96,13 +106,7 @@ public class GroundskeeperController {
     }
 
     protected void unload() {
-        BukkitScheduler scheduler = Bukkit.getScheduler();
-
-        if (warningTaskId > 0)
-            scheduler.cancelTask(warningTaskId);
-
-        if (globalTaskId > 0 )
-            scheduler.cancelTask(globalTaskId);
+        cancelTasks();
 
         protectedTypes.clear();
     }
