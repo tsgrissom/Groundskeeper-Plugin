@@ -2,6 +2,7 @@ package io.github.t0xictyler.groundskeeper.task;
 
 import com.google.common.collect.ImmutableMap;
 import io.github.t0xictyler.groundskeeper.GroundskeeperController;
+import io.github.t0xictyler.groundskeeper.misc.CleanupReport;
 import io.github.t0xictyler.groundskeeper.misc.GKWorld;
 import io.github.t0xictyler.groundskeeper.GroundskeeperPlugin;
 import javafx.util.Pair;
@@ -48,12 +49,10 @@ public class CleanupWorldTask extends BukkitRunnable {
     @Override
     public void run() {
         GroundskeeperController controller = getPlugin().getController();
-        Pair<Integer, Integer> cleared = getWorld().clearGroundEntities(shouldBypassProtection());
-        int totalCleared = cleared.getKey();
-        int stacksCleared = cleared.getValue();
+        CleanupReport report = getWorld().clearGroundEntities(shouldBypassProtection());
         Map<String, String> replace = ImmutableMap.of(
-                "%totalCleared%", String.valueOf(totalCleared),
-                "%stacksCleared%", String.valueOf(stacksCleared),
+                "%totalCleared%", String.valueOf(report.getTotalItemsCleared()),
+                "%stacksCleared%", String.valueOf(report.getStacksCleared()),
                 "%world%", getWorldName()
                 );
 

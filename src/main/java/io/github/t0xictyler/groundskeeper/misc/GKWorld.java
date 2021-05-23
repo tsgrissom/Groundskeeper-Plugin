@@ -39,7 +39,7 @@ public class GKWorld {
         this(controller, world.getName());
     }
 
-    public Pair<Integer, Integer> clearGroundEntities(boolean bypassProtection) {
+    public CleanupReport clearGroundEntities(boolean bypassProtection) {
         int totalCount = 0, stackCount = 0;
         Set<Material> protectedTypes = controller.getProtectedTypes();
 
@@ -64,6 +64,11 @@ public class GKWorld {
             stackCount++;
         }
 
-        return new Pair<>(totalCount, stackCount);
+        CleanupReport report = new CleanupReport();
+
+        report.setStacksCleared(stackCount);
+        report.setTotalItemsCleared(totalCount);
+
+        return report;
     }
 }
