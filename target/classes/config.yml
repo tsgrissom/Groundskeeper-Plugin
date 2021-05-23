@@ -50,5 +50,5 @@ integrations:
 messages:
   # Available placeholders: %time%
   warning: "&e&lGroundskeeper &6> &3Clearing ground items in &e%time% &3seconds..."
-  # Available placeholders: %totalCleared%, %stacksCleared%, %world%
+  # Available placeholders: %totalCleared%, %stacksCleared%, %totalSkipped%, %stacksSkipped%, %world%
   cleared: "&e&lGroundskeeper &7&o<%world%> &6Cleared &c%totalCleared% &6ground items"

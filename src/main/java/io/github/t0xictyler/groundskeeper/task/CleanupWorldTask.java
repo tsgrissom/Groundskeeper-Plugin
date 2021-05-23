@@ -53,11 +53,13 @@ public class CleanupWorldTask extends BukkitRunnable {
         Map<String, String> replace = ImmutableMap.of(
                 "%totalCleared%", String.valueOf(report.getTotalItemsCleared()),
                 "%stacksCleared%", String.valueOf(report.getStacksCleared()),
+                "%totalSkipped%", String.valueOf(report.getTotalItemsSkipped()),
+                "%stacksSkipped%", String.valueOf(report.getStacksSkipped()),
                 "%world%", getWorldName()
                 );
 
         if (report.isEmpty()) {
-            Bukkit.getLogger().info(String.format("Tried to clean up world \"%s\" but there were no items cleared", getWorldName()));
+            Bukkit.getLogger().info(String.format("[GK] Tried to clean up world \"%s\" but there were no items cleared", getWorldName()));
             return;
         }
 

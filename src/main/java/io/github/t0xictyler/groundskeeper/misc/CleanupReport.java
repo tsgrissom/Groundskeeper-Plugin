@@ -7,7 +7,10 @@ import lombok.Setter;
 public class CleanupReport {
 
     @Getter @Setter(AccessLevel.PROTECTED)
-    private int stacksCleared = 0, totalItemsCleared = 0;
+    private int stacksCleared = 0,
+            totalItemsCleared = 0,
+            stacksSkipped = 0,
+            totalItemsSkipped = 0;
 
     public boolean isEmpty() {
         return stacksCleared == 0 && totalItemsCleared == 0;

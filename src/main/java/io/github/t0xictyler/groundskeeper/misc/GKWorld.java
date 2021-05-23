@@ -1,5 +1,7 @@
 package io.github.t0xictyler.groundskeeper.misc;
 
+import com.elmakers.mine.bukkit.api.magic.MagicAPI;
+import com.elmakers.mine.bukkit.api.wand.Wand;
 import io.github.t0xictyler.groundskeeper.GroundskeeperController;
 import javafx.util.Pair;
 import lombok.Getter;
@@ -40,7 +42,7 @@ public class GKWorld {
     }
 
     public CleanupReport clearGroundEntities(boolean bypassProtection) {
-        int totalCount = 0, stackCount = 0;
+        int totalCleared = 0, stacksCleared = 0, totalSkipped = 0, stacksSkipped = 0;
         Set<Material> protectedTypes = controller.getProtectedTypes();
 
         for (Entity entity : getWorld().getEntities()) {
@@ -53,21 +55,39 @@ public class GKWorld {
             String name = Utils.normalizeEnumName(is.getType().name());
 
             if (protectedTypes.contains(is.getType()) && !bypassProtection) {
+                totalSkipped += is.getAmount();
+                stacksSkipped++;
+
                 Bukkit.getLogger().info(String.format("Protected %d %s", is.getAmount(), name));
                 continue;
             }
 
-            totalCount += is.getAmount();
+            if (controller.isIntegratedWithMagic()) {
+                MagicAPI api = controller.getMagicAPI();
+                if (api.isWand(is)) {
+                    Wand w = api.getWand(is);
+
+                    totalSkipped += is.getAmount();
+                    stacksSkipped++;
+
+                    Bukkit.getLogger().info(String.format("Protected %d wand (key: %s)", is.getAmount(), w.getTemplateKey()));
+                    continue;
+                }
+            }
+
+            totalCleared += is.getAmount();
 
             Bukkit.getLogger().info(String.format("Cleared %d %s", is.getAmount(), name));
             item.remove();
-            stackCount++;
+            stacksCleared++;
         }
 
         CleanupReport report = new CleanupReport();
 
-        report.setStacksCleared(stackCount);
-        report.setTotalItemsCleared(totalCount);
+        report.setStacksCleared(stacksCleared);
+        report.setTotalItemsCleared(totalCleared);
+        report.setStacksSkipped(stacksSkipped);
+        report.setTotalItemsSkipped(totalSkipped);
 
         return report;
     }
