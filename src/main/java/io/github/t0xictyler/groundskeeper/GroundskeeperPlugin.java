@@ -6,6 +6,8 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.annotation.command.Command;
 import org.bukkit.plugin.java.annotation.command.Commands;
+import org.bukkit.plugin.java.annotation.dependency.SoftDependency;
+import org.bukkit.plugin.java.annotation.dependency.SoftDependsOn;
 import org.bukkit.plugin.java.annotation.permission.ChildPermission;
 import org.bukkit.plugin.java.annotation.permission.Permission;
 import org.bukkit.plugin.java.annotation.permission.Permissions;
@@ -21,6 +23,9 @@ import org.bukkit.plugin.java.annotation.plugin.author.Authors;
 })
 @Description("Smart entity cleaner")
 @Website("https://github.com/T0xicTyler/Groundskeeper")
+@SoftDependsOn({
+        @SoftDependency("Magic")
+})
 @Commands({
         @Command(name = "groundskeeper", aliases = "gk")
 })
