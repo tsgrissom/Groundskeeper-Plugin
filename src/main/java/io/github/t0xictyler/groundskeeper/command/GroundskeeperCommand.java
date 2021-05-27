@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class GroundskeeperCommand implements TabExecutor {
@@ -280,8 +282,8 @@ public class GroundskeeperCommand implements TabExecutor {
         List<String> tab = new ArrayList<>();
         List<String> subs = Arrays.asList("help", "version", "debug", "force", "reload", "global", "protected", "protect", "unprotect");
         List<String> globalSubs = Arrays.asList("interval", "toggle");
-
-        // TODO Finish tab completion
+        List<String> allMaterials = Arrays.stream(Material.values()).map(Enum::name).collect(Collectors.toList());
+        List<String> protectedMaterials = getController().getProtectedTypes().stream().map(Enum::name).collect(Collectors.toList());
 
         if (args.length == 0) {
             tab.addAll(subs);
@@ -291,6 +293,29 @@ public class GroundskeeperCommand implements TabExecutor {
             for (String s : subs) {
                 if (StringUtils.startsWithIgnoreCase(s, arg1)) {
                     tab.add(s);
+                }
+            }
+        } else if (args.length == 2) {
+            String arg1 = args[0];
+            String arg2 = args[1];
+
+            if (arg1.equalsIgnoreCase("global")) {
+                for (String s : globalSubs) {
+                    if (StringUtils.startsWithIgnoreCase(s, arg2)) {
+                        tab.add(s);
+                    }
+                }
+            } else if (arg1.equalsIgnoreCase("protect")) {
+                for (String s : allMaterials) {
+                    if (StringUtils.startsWithIgnoreCase(s, arg2)) {
+                        tab.add(s);
+                    }
+                }
+            } else if (arg1.equalsIgnoreCase("unprotect")) {
+                for (String s : protectedMaterials) {
+                    if (StringUtils.startsWithIgnoreCase(s, arg2)) {
+                        tab.add(s);
+                    }
                 }
             }
         }

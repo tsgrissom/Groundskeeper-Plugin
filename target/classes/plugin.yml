@@ -1,4 +1,4 @@
-# Auto-generated plugin.yml, generated at 2021/05/27 09:52:24 by org.bukkit.plugin.java.annotation.PluginAnnotationProcessor
+# Auto-generated plugin.yml, generated at 2021/05/27 10:06:28 by org.bukkit.plugin.java.annotation.PluginAnnotationProcessor
 
 main: io.github.t0xictyler.groundskeeper.GroundskeeperPlugin
 name: Groundskeeper
@@ -6,6 +6,8 @@ version: 1.0.0
 description: Smart entity cleaner
 author: T0xicTyler
 website: https://github.com/T0xicTyler/Groundskeeper
+softdepend:
+- Magic
 commands:
   groundskeeper:
     aliases: gk
@@ -16,3 +18,4 @@ permissions:
       groundskeeper.debug: true
   groundskeeper.command: {}
   groundskeeper.debug: {}
+api-version: '1.13'

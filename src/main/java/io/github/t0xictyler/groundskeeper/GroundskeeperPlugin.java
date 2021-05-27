@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.annotation.dependency.SoftDependsOn;
 import org.bukkit.plugin.java.annotation.permission.ChildPermission;
 import org.bukkit.plugin.java.annotation.permission.Permission;
 import org.bukkit.plugin.java.annotation.permission.Permissions;
+import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
 import org.bukkit.plugin.java.annotation.plugin.Description;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
 import org.bukkit.plugin.java.annotation.plugin.Website;
@@ -18,6 +19,7 @@ import org.bukkit.plugin.java.annotation.plugin.author.Author;
 import org.bukkit.plugin.java.annotation.plugin.author.Authors;
 
 @Plugin(name = "Groundskeeper", version = "1.0.0")
+@ApiVersion(ApiVersion.Target.v1_13)
 @Authors({
         @Author("T0xicTyler")
 })
