@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -123,6 +124,21 @@ public class GroundskeeperController {
 
     public boolean isDebugging() {
         return getPlugin().getConfig().getBoolean("debug", false);
+    }
+
+    public void sendDebug(String message) {
+        if (!isDebugging())
+            return;
+
+        message = Utils.color(message);
+
+        Bukkit.getConsoleSender().sendMessage(String.format("[Groundskeeper] DEBUG: %s", message));
+
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (p.hasPermission("groundskeeper.debug")) {
+                p.sendMessage(Utils.color(String.format("&e&lGK &8Debug &6> &7%s", message)));
+            }
+        }
     }
 
     private ConfigurationSection getGlobalSection() {

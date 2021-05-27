@@ -58,7 +58,7 @@ public class GKWorld {
                 totalSkipped += is.getAmount();
                 stacksSkipped++;
 
-                Bukkit.getLogger().info(String.format("Protected %d %s", is.getAmount(), name));
+                controller.sendDebug(String.format("Protected %d %s", is.getAmount(), name));
                 continue;
             }
 
@@ -70,14 +70,14 @@ public class GKWorld {
                     totalSkipped += is.getAmount();
                     stacksSkipped++;
 
-                    Bukkit.getLogger().info(String.format("Protected %d wand (key: %s)", is.getAmount(), w.getTemplateKey()));
+                    controller.sendDebug(String.format("Protected %d wand (key: %s)", is.getAmount(), w.getTemplateKey()));
                     continue;
                 }
             }
 
             totalCleared += is.getAmount();
 
-            Bukkit.getLogger().info(String.format("Cleared %d %s", is.getAmount(), name));
+            controller.sendDebug(String.format("Cleared %d %s", is.getAmount(), name));
             item.remove();
             stacksCleared++;
         }

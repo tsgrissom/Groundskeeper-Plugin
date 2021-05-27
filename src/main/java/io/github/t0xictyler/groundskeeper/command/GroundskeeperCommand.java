@@ -46,7 +46,8 @@ public class GroundskeeperCommand implements TabExecutor {
                 " &6> &7/gk global &8- &3Modify global task settings",
                 " &6> &7/gk protected &8- &3List protected materials",
                 " &6> &7/gk protect <material> &8- &3Protect a material",
-                " &6> &7/gk unprotect <material> &8- &3Unprotect a material"
+                " &6> &7/gk unprotect <material> &8- &3Unprotect a material",
+                " &6> &7/gk debug &8- &3Toggle debug mode"
         );
     }
 
@@ -277,7 +278,7 @@ public class GroundskeeperCommand implements TabExecutor {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         List<String> tab = new ArrayList<>();
-        List<String> subs = Arrays.asList("help", "version", "force", "reload", "global", "protected", "protect", "unprotect");
+        List<String> subs = Arrays.asList("help", "version", "debug", "force", "reload", "global", "protected", "protect", "unprotect");
         List<String> globalSubs = Arrays.asList("interval", "toggle");
 
         // TODO Finish tab completion

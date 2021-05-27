@@ -26,9 +26,11 @@ import org.bukkit.plugin.java.annotation.plugin.author.Authors;
 })
 @Permissions({
         @Permission(name = "groundskeeper.*", children = {
-                @ChildPermission(name = "groundskeeper.command")
+                @ChildPermission(name = "groundskeeper.command"),
+                @ChildPermission(name = "groundskeeper.debug")
         }),
-        @Permission(name = "groundskeeper.command")
+        @Permission(name = "groundskeeper.command"),
+        @Permission(name = "groundskeeper.debug")
 })
 public class GroundskeeperPlugin extends JavaPlugin {
 

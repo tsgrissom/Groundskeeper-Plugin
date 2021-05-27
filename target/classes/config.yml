@@ -1,3 +1,5 @@
+debug: false
+
 # Global task settings
 global:
   # Whether or not to clear all worlds on an interval
