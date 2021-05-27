@@ -3,7 +3,6 @@ package io.github.t0xictyler.groundskeeper.misc;
 import com.elmakers.mine.bukkit.api.magic.MagicAPI;
 import com.elmakers.mine.bukkit.api.wand.Wand;
 import io.github.t0xictyler.groundskeeper.GroundskeeperController;
-import javafx.util.Pair;
 import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.Bukkit;
