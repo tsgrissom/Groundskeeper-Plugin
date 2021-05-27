@@ -121,6 +121,10 @@ public class GroundskeeperController {
         sender.sendMessage(Utils.color("&aSuccessfully reloaded Groundskeeper!"));
     }
 
+    public boolean isDebugging() {
+        return getPlugin().getConfig().getBoolean("debug", false);
+    }
+
     private ConfigurationSection getGlobalSection() {
         return getPlugin().getConfig().getConfigurationSection("global");
     }

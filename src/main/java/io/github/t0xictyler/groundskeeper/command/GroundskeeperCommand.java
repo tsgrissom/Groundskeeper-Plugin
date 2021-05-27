@@ -99,9 +99,25 @@ public class GroundskeeperCommand implements TabExecutor {
             return removeProtected(sender, args);
         } else if (arg1.equalsIgnoreCase("global") || arg1.equalsIgnoreCase("g")) {
             return global(sender, args);
+        } else if (arg1.equalsIgnoreCase("debug")) {
+            return debug(sender);
         } else {
             sender.sendMessage(Utils.color(" &4&lX &cUnknown sub-command! Do &e/gk ?&c for help."));
         }
+
+        return true;
+    }
+
+    public boolean debug(CommandSender sender) {
+        GroundskeeperPlugin plugin = getController().getPlugin();
+        boolean debug = !getController().isDebugging();
+
+        plugin.getConfig().set("debug", debug);
+        plugin.saveConfig();
+
+        String boolStr = debug ? Utils.color("&aenabled") : Utils.color("&cdisabled");
+
+        sender.sendMessage(Utils.color(String.format("&eGroundskeeper &6debugging has been %s", boolStr)));
 
         return true;
     }
