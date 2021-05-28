@@ -123,30 +123,31 @@ public class GroundskeeperController {
     }
 
     public boolean isDebugging() {
-        return getPlugin().getConfig().getBoolean("debug", false);
+        return getConfig().getBoolean("debug", false);
     }
 
     public void sendDebug(String message) {
-        if (!isDebugging())
-            return;
+        if (isDebugging()) {
+            message = Utils.color(message);
 
-        message = Utils.color(message);
+            Bukkit.getConsoleSender().sendMessage(String.format("[Groundskeeper] DEBUG: %s", message));
 
-        Bukkit.getConsoleSender().sendMessage(String.format("[Groundskeeper] DEBUG: %s", message));
-
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p.hasPermission("groundskeeper.debug")) {
-                p.sendMessage(Utils.color(String.format("&e&lGK &8Debug &6> &7%s", message)));
-            }
+            for (Player p : Bukkit.getOnlinePlayers())
+                if (p.hasPermission("groundskeeper.debug"))
+                    p.sendMessage(Utils.color(String.format("&e&lGK &8Debug &6> &7%s", message)));
         }
     }
 
+    private FileConfiguration getConfig() {
+        return getPlugin().getConfig();
+    }
+
     private ConfigurationSection getGlobalSection() {
-        return getPlugin().getConfig().getConfigurationSection("global");
+        return getConfig().getConfigurationSection("global");
     }
 
     public boolean isGlobalTaskEnabled() {
-        return getGlobalSection().getBoolean("enabled");
+        return getGlobalSection().getBoolean("enabled", true);
     }
 
     public long getGlobalTaskInterval() {
@@ -160,8 +161,9 @@ public class GroundskeeperController {
     public long getWarningTiming() {
         return getGlobalSection().getLong("warnBefore", 20);
     }
+
     private boolean shouldIntegrateWithMagic() {
-        return getPlugin().getConfig().getBoolean("integrations.magic", true);
+        return getConfig().getBoolean("integrations.magic", true);
     }
 
     public boolean isIntegratedWithMagic() {
@@ -169,7 +171,7 @@ public class GroundskeeperController {
     }
 
     public String getMessage(String key) {
-        ConfigurationSection cs = getPlugin().getConfig().getConfigurationSection("messages");
+        ConfigurationSection cs = getConfig().getConfigurationSection("messages");
 
         if (cs == null)
             return Utils.color("&cGroundskeeper is improperly configured: No messages section.");
@@ -198,9 +200,7 @@ public class GroundskeeperController {
 
         getProtectedTypes().add(material);
 
-        FileConfiguration conf = getPlugin().getConfig();
-
-        conf.set("protectedTypes", getProtectedTypes().stream().map(Enum::name).collect(Collectors.toList()));
+        getConfig().set("protectedTypes", getProtectedTypes().stream().map(Enum::name).collect(Collectors.toList()));
         getPlugin().saveConfig();
         getProtectedTypes().clear();
         loadProtectedTypes();
@@ -217,9 +217,7 @@ public class GroundskeeperController {
 
         getProtectedTypes().remove(material);
 
-        FileConfiguration conf = getPlugin().getConfig();
-
-        conf.set("protectedTypes", getProtectedTypes().stream().map(Enum::name).collect(Collectors.toList()));
+        getConfig().set("protectedTypes", getProtectedTypes().stream().map(Enum::name).collect(Collectors.toList()));
         getPlugin().saveConfig();
         getProtectedTypes().clear();
         loadProtectedTypes();

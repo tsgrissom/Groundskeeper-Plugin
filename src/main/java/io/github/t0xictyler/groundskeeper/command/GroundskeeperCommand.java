@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static io.github.t0xictyler.groundskeeper.misc.Utils.color;
+import static java.lang.String.format;
+
 @RequiredArgsConstructor
 public class GroundskeeperCommand implements TabExecutor {
 
@@ -35,7 +38,7 @@ public class GroundskeeperCommand implements TabExecutor {
     }
 
     public List<String> getHelp() {
-        return Utils.color(
+        return color(
                 " &8&m----------------------------------------",
                 "&8| &eGroundskeeper &7Command Help",
                 " &8&m----------------------------------------",
@@ -57,7 +60,7 @@ public class GroundskeeperCommand implements TabExecutor {
 
     private boolean hasFlag(String[] args, String shortArg, String longArg) {
         for (String a : args) {
-            if (a.equalsIgnoreCase(String.format("-%s", shortArg)) || a.equalsIgnoreCase(String.format("--%s", longArg)))
+            if (a.equalsIgnoreCase(format("-%s", shortArg)) || a.equalsIgnoreCase(format("--%s", longArg)))
                 return true;
         }
 
@@ -75,7 +78,7 @@ public class GroundskeeperCommand implements TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("groundskeeper.command")) {
-            sender.sendMessage(Utils.color("&cYou are not allowed to do that!"));
+            sender.sendMessage(color("&cYou are not allowed to do that!"));
 
             return true;
         }
@@ -93,7 +96,7 @@ public class GroundskeeperCommand implements TabExecutor {
         } else if (Utils.equalsAny(arg1, "help", "?")) {
             getHelp().forEach(sender::sendMessage);
         } else if (Utils.equalsAny(arg1, "version", "v")) {
-            sender.sendMessage(Utils.color(String.format(" &6> &eGroundskeeper &bv%s &7by &bT0xicTyler", plugin.getDescription().getVersion())));
+            sender.sendMessage(color(format(" &6> &eGroundskeeper &bv%s &7by &bT0xicTyler", plugin.getDescription().getVersion())));
         } else if (arg1.equalsIgnoreCase("force")) {
             return forceCleanup(sender, args);
         } else if (arg1.equalsIgnoreCase("protected")) {
@@ -102,12 +105,12 @@ public class GroundskeeperCommand implements TabExecutor {
             return addProtected(sender, args);
         } else if (arg1.equalsIgnoreCase("unprotect")) {
             return removeProtected(sender, args);
-        } else if (arg1.equalsIgnoreCase("global") || arg1.equalsIgnoreCase("g")) {
+        } else if (Utils.equalsAny(arg1, "global", "g")) {
             return global(sender, args);
-        } else if (arg1.equalsIgnoreCase("debug")) {
+        } else if (Utils.equalsAny(arg1, "debug", "debugger")) {
             return debug(sender);
         } else {
-            sender.sendMessage(Utils.color(" &4&lX &cUnknown sub-command! Do &e/gk ?&c for help."));
+            sender.sendMessage(color(format(" &4&lX &cUnknown sub-command \"%s\"! Do &e/gk ?&c for help.", arg1)));
         }
 
         return true;
@@ -120,9 +123,9 @@ public class GroundskeeperCommand implements TabExecutor {
         plugin.getConfig().set("debug", debug);
         plugin.saveConfig();
 
-        String boolStr = debug ? Utils.color("&aenabled") : Utils.color("&cdisabled");
+        String boolStr = debug ? color("&aenabled") : color("&cdisabled");
 
-        sender.sendMessage(Utils.color(String.format("&eGroundskeeper &6debugging has been %s", boolStr)));
+        sender.sendMessage(color(format("&eGroundskeeper &6debugging has been %s", boolStr)));
 
         return true;
     }
@@ -130,9 +133,9 @@ public class GroundskeeperCommand implements TabExecutor {
     public boolean global(CommandSender sender, String[] args) {
         if (args.length == 1) {
             GroundskeeperController controller = getController();
-            String enabled = controller.isGlobalTaskEnabled() ? Utils.color("&aYes") : Utils.color("&cNo");
-            String interval = Utils.color(String.format("&b%ds", controller.getGlobalTaskInterval()));
-            List<String> global = Utils.color(
+            String enabled = controller.isGlobalTaskEnabled() ? color("&aYes") : color("&cNo");
+            String interval = color(format("&b%ds", controller.getGlobalTaskInterval()));
+            List<String> global = color(
                     "",
                     " &8&m----------------------------------------",
                     "&8| &eGroundskeeper &7Global Task Settings",
@@ -147,23 +150,20 @@ public class GroundskeeperCommand implements TabExecutor {
 
             if (arg2.equalsIgnoreCase("interval")) {
                 if (args.length == 2) {
-                    sender.sendMessage(Utils.color(" &4&lX &cUsage&8: &e/gk global interval <time in seconds>"));
+                    sender.sendMessage(color(" &4&lX &cUsage&8: &e/gk global interval <time in seconds>"));
                 } else {
                     try {
                         int i = Integer.parseInt(args[2]);
 
-                        FileConfiguration conf = plugin.getConfig();
-
-                        conf.set("global.interval", i);
-
+                        plugin.getConfig().set("global.interval", i);
                         plugin.saveConfig();
 
                         getController().cancelTasks();
                         getController().scheduleGlobalTask();
 
-                        sender.sendMessage(Utils.color(String.format("&eGroundskeeper &6global task will now repeat every &c%ds&6.", i)));
+                        sender.sendMessage(color(format("&eGroundskeeper &6global task will now repeat every &c%ds&6.", i)));
                     } catch (NumberFormatException ignored) {
-                        sender.sendMessage(Utils.color(" &4&lX &cPlease enter a valid time in seconds."));
+                        sender.sendMessage(color(" &4&lX &cPlease enter a valid time in seconds."));
                     }
                 }
             } else if (arg2.equalsIgnoreCase("toggle")) {
@@ -174,7 +174,7 @@ public class GroundskeeperCommand implements TabExecutor {
                 }
             } else if (arg2.equalsIgnoreCase("enable")) {
                 if (getController().isGlobalTaskEnabled()) {
-                    sender.sendMessage(Utils.color(" &4&lX &cGlobal task is already enabled"));
+                    sender.sendMessage(color(" &4&lX &cGlobal task is already enabled"));
                     return true;
                 }
 
@@ -185,10 +185,10 @@ public class GroundskeeperCommand implements TabExecutor {
                 plugin.saveConfig();
 
                 getController().scheduleGlobalTask();
-                sender.sendMessage(Utils.color(String.format("&eGroundskeeper &6global task has been &aenabled&6. Will repeat every &c%ds&6.", getController().getGlobalTaskInterval())));
+                sender.sendMessage(color(format("&eGroundskeeper &6global task has been &aenabled&6. Will repeat every &c%ds&6.", getController().getGlobalTaskInterval())));
             } else if (arg2.equalsIgnoreCase("disable")) {
                 if (!getController().isGlobalTaskEnabled()) {
-                    sender.sendMessage(Utils.color(" &4&lX &cGlobal task is already disabled"));
+                    sender.sendMessage(color(" &4&lX &cGlobal task is already disabled"));
                     return true;
                 }
 
@@ -199,7 +199,7 @@ public class GroundskeeperCommand implements TabExecutor {
                 plugin.saveConfig();
 
                 getController().cancelTasks();
-                sender.sendMessage(Utils.color("&eGroundskeeper &6global task has been &cdisabled&6."));
+                sender.sendMessage(color("&eGroundskeeper &6global task has been &cdisabled&6."));
             }
         }
 
@@ -213,12 +213,12 @@ public class GroundskeeperCommand implements TabExecutor {
             Player p = (Player) sender;
 
             if (hasFlag(args, "a", "all")) {
-                sender.sendMessage(Utils.color("&6Forcing all worlds to be cleared in &c3 seconds&6..."));
+                sender.sendMessage(color("&6Forcing all worlds to be cleared in &c3 seconds&6..."));
                 new CleanupTask(plugin, clearProtected).runTaskLater(plugin, 60);
             } else {
                 World w = p.getWorld();
 
-                sender.sendMessage(Utils.color(String.format("&6Forcing world &c\"%s\" &6to be cleared in &c3 seconds&6...", w.getName())));
+                sender.sendMessage(color(format("&6Forcing world &c\"%s\" &6to be cleared in &c3 seconds&6...", w.getName())));
                 new CleanupWorldTask(plugin, w, clearProtected).runTaskLater(plugin, 60);
             }
         } else {
@@ -231,13 +231,13 @@ public class GroundskeeperCommand implements TabExecutor {
 
     public boolean addProtected(CommandSender sender, String[] args) {
         if (args.length == 1) {
-            sender.sendMessage(Utils.color(" &4&lX &cPlease specify a material to protect"));
+            sender.sendMessage(color(" &4&lX &cPlease specify a material to protect"));
         } else {
             String arg2 = args[1];
             Material m = Material.getMaterial(arg2);
 
             if (m == null) {
-                sender.sendMessage(Utils.color(String.format(" &4&lX &cUnknown material &4\"%s\"", arg2)));
+                sender.sendMessage(color(format(" &4&lX &cUnknown material &4\"%s\"", arg2)));
             } else {
                 getController().addProtectedType(sender, m);
             }
@@ -248,13 +248,13 @@ public class GroundskeeperCommand implements TabExecutor {
 
     public boolean removeProtected(CommandSender sender, String[] args) {
         if (args.length == 1) {
-            sender.sendMessage(Utils.color(" &4&lX &cPlease specify a material to unprotect"));
+            sender.sendMessage(color(" &4&lX &cPlease specify a material to unprotect"));
         } else {
             String arg2 = args[1];
             Material m = Material.getMaterial(arg2);
 
             if (m == null) {
-                sender.sendMessage(Utils.color(String.format(" &4&lX &cUnknown material &4\"%s\"", arg2)));
+                sender.sendMessage(color(format(" &4&lX &cUnknown material &4\"%s\"", arg2)));
             } else {
                 getController().removeProtectedType(sender, m);
             }
@@ -267,10 +267,10 @@ public class GroundskeeperCommand implements TabExecutor {
         Set<Material> protectedTypes = getController().getProtectedTypes();
 
         for (Material m : getController().getProtectedTypes()) {
-            sender.sendMessage(Utils.color(String.format(" &6> &e%s", m.name())));
+            sender.sendMessage(color(format(" &6> &e%s", m.name())));
         }
 
-        sender.sendMessage(Utils.color(String.format("&eGroundskeeper &6is protecting &c%d &6materials from being cleared", protectedTypes.size())));
+        sender.sendMessage(color(format("&eGroundskeeper &6is protecting &c%d &6materials from being cleared", protectedTypes.size())));
 
         if (getController().isIntegratedWithMagic()) {
             sender.sendMessage("&dGroundskeeper is protecting Magic wands");
@@ -283,9 +283,6 @@ public class GroundskeeperCommand implements TabExecutor {
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         List<String> tab = new ArrayList<>();
         List<String> subs = Arrays.asList("help", "version", "debug", "force", "reload", "global", "protected", "protect", "unprotect");
-        List<String> globalSubs = Arrays.asList("interval", "toggle");
-        List<String> allMaterials = Arrays.stream(Material.values()).map(Enum::name).collect(Collectors.toList());
-        List<String> protectedMaterials = getController().getProtectedTypes().stream().map(Enum::name).collect(Collectors.toList());
 
         if (args.length == 0) {
             tab.addAll(subs);
@@ -302,19 +299,19 @@ public class GroundskeeperCommand implements TabExecutor {
             String arg2 = args[1];
 
             if (arg1.equalsIgnoreCase("global")) {
-                for (String s : globalSubs) {
+                for (String s : Arrays.asList("interval", "toggle", "enable", "disable")) {
                     if (StringUtils.startsWithIgnoreCase(s, arg2)) {
                         tab.add(s);
                     }
                 }
             } else if (arg1.equalsIgnoreCase("protect")) {
-                for (String s : allMaterials) {
+                for (String s : Arrays.stream(Material.values()).map(Enum::name).collect(Collectors.toList())) {
                     if (StringUtils.startsWithIgnoreCase(s, arg2)) {
                         tab.add(s);
                     }
                 }
             } else if (arg1.equalsIgnoreCase("unprotect")) {
-                for (String s : protectedMaterials) {
+                for (String s : getController().getProtectedTypes().stream().map(Enum::name).collect(Collectors.toList())) {
                     if (StringUtils.startsWithIgnoreCase(s, arg2)) {
                         tab.add(s);
                     }
