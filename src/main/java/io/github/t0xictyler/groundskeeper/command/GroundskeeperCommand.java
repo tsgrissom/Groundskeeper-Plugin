@@ -77,6 +77,9 @@ public class GroundskeeperCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!Utils.equalsAny(label, "groundskeeper", "gk"))
+            return true;
+
         if (!sender.hasPermission("groundskeeper.command")) {
             sender.sendMessage(color("&cYou are not allowed to do that!"));
 
@@ -282,6 +285,10 @@ public class GroundskeeperCommand implements TabExecutor {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         List<String> tab = new ArrayList<>();
+
+        if (!Utils.equalsAny(label, "groundskeeper", "gk"))
+            return tab;
+
         List<String> subs = Arrays.asList("help", "version", "debug", "force", "reload", "global", "protected", "protect", "unprotect");
 
         if (args.length == 0) {
