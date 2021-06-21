@@ -36,10 +36,6 @@ public class GKWorld {
         this.worldName = worldName;
     }
 
-    public GKWorld(GroundskeeperController controller, World world) {
-        this(controller, world.getName());
-    }
-
     public CleanupReport clearGroundEntities(boolean bypassProtection) {
         int totalCleared = 0, stacksCleared = 0, totalSkipped = 0, stacksSkipped = 0;
         Set<Material> protectedTypes = controller.getProtectedTypes();

@@ -12,8 +12,11 @@ Groundskeeper is a Spigot plugin which serves to replace plugins like ClearLagg 
 * `/gk protected` - List protected materials
 * `/gk protect <material>` - Protect a material
 * `/gk unprotect <material>` - Unprotect a material
+* `/gk debug` - Toggle debugger
 
 ### Permissions
 
 * `groundskeeper.*`
-* `groundskeeper.command`
+* `groundskeeper.command` - Whether the player should be allowed to use /gk commands.
+* `groundskeeper.reload` - Whether the player should be able to use /gk reload.
+* `groundskeeper.notify` - Whether to send notifications to the player. Default is true. Negate this in your permission manager if you want.

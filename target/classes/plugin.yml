@@ -1,4 +1,4 @@
-# Auto-generated plugin.yml, generated at 2021/05/27 10:06:28 by org.bukkit.plugin.java.annotation.PluginAnnotationProcessor
+# Auto-generated plugin.yml, generated at 2021/06/18 04:34:39 by org.bukkit.plugin.java.annotation.PluginAnnotationProcessor
 
 main: io.github.t0xictyler.groundskeeper.GroundskeeperPlugin
 name: Groundskeeper
@@ -18,4 +18,6 @@ permissions:
       groundskeeper.debug: true
   groundskeeper.command: {}
   groundskeeper.debug: {}
+  groundskeeper.notify:
+    default: 'true'
 api-version: '1.13'

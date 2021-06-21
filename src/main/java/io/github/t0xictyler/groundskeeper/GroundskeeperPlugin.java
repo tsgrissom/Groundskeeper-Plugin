@@ -3,6 +3,7 @@ package io.github.t0xictyler.groundskeeper;
 import io.github.t0xictyler.groundskeeper.command.GroundskeeperCommand;
 import lombok.Getter;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.annotation.command.Command;
 import org.bukkit.plugin.java.annotation.command.Commands;
@@ -37,7 +38,8 @@ import org.bukkit.plugin.java.annotation.plugin.author.Authors;
                 @ChildPermission(name = "groundskeeper.debug")
         }),
         @Permission(name = "groundskeeper.command"),
-        @Permission(name = "groundskeeper.debug")
+        @Permission(name = "groundskeeper.debug"),
+        @Permission(name = "groundskeeper.notify", defaultValue = PermissionDefault.TRUE)
 })
 public class GroundskeeperPlugin extends JavaPlugin {
 

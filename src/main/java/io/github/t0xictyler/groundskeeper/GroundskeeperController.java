@@ -224,4 +224,14 @@ public class GroundskeeperController {
 
         sender.sendMessage(Utils.color(String.format("&6Material &c\"%s\" &6will no longer be protected from being cleared", material.name())));
     }
+    
+    public void notify(String message) {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (p.hasPermission("groundskeeper.notify")) {
+                p.sendMessage(message);
+            }
+        }
+
+        Bukkit.getLogger().info(String.format("[GK] %s", message));
+    }
 }

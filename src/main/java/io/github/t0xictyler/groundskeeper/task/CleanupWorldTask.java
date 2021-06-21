@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Map;
@@ -62,6 +63,6 @@ public class CleanupWorldTask extends BukkitRunnable {
             return;
         }
 
-        Bukkit.broadcastMessage(controller.getMessage("cleared", replace));
+        controller.notify(controller.getMessage("cleared", replace));
     }
 }

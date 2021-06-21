@@ -28,7 +28,7 @@ public class CleanupTask extends BukkitRunnable {
                     "%time%", String.valueOf(in)
             );
 
-            Bukkit.broadcastMessage(controller.getMessage("warning", replace));
+            controller.notify(controller.getMessage("warning", replace));
         }
     }
 
