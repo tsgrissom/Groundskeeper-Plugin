@@ -6,10 +6,6 @@ global:
   enabled: true
   # How often to clear all worlds in seconds
   interval: 60
-  # Whether or not to warn players that the ground is going to be cleared
-  warn: true
-  # How many seconds before clearing the ground to warn players
-  warnBefore: 20
 
 # Which Materials to protect from being cleared
 # Bypass this with /gk force --clear-protected
@@ -50,7 +46,5 @@ integrations:
 
 # Configure user-facing plugin messages
 messages:
-  # Available placeholders: %time%
-  warning: "&eGroundskeeper &6> &3Clearing ground items in &e%time% &3seconds..."
   # Available placeholders: %totalCleared%, %stacksCleared%, %totalSkipped%, %stacksSkipped%, %world%
   cleared: "&eGroundskeeper &7&o<%world%> &6Cleared &c%totalCleared% &6ground items"

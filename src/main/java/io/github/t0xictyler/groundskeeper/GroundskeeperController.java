@@ -26,7 +26,7 @@ public class GroundskeeperController {
     @Getter
     private MagicAPI magicAPI;
 
-    private int warningTaskId, globalTaskId;
+    private int globalTaskId;
 
     @Getter
     private Set<Material> protectedTypes;
@@ -41,11 +41,6 @@ public class GroundskeeperController {
     public void scheduleGlobalTask() {
         Bukkit.getLogger().info("Scheduling Groundskeeper global task...");
 
-        if (isWarningGlobalTaskEnabled())
-            this.warningTaskId = new CleanupTask.CleanupWarnTask(plugin)
-                    .runTaskTimer(plugin, (getGlobalTaskInterval() - getWarningTiming()) * 20, (getGlobalTaskInterval() - getWarningTiming()) * 20)
-                    .getTaskId();
-
         this.globalTaskId = new CleanupTask(plugin, false)
                 .runTaskTimer(plugin, getGlobalTaskInterval() * 20, getGlobalTaskInterval() * 20)
                 .getTaskId();
@@ -53,9 +48,6 @@ public class GroundskeeperController {
 
     public void cancelTasks() {
         BukkitScheduler scheduler = Bukkit.getScheduler();
-
-        if (warningTaskId > 0)
-            scheduler.cancelTask(warningTaskId);
 
         if (globalTaskId > 0 )
             scheduler.cancelTask(globalTaskId);
@@ -152,14 +144,6 @@ public class GroundskeeperController {
 
     public long getGlobalTaskInterval() {
         return getGlobalSection().getLong("interval", 60);
-    }
-
-    public boolean isWarningGlobalTaskEnabled() {
-        return getGlobalSection().getBoolean("warn", true);
-    }
-
-    public long getWarningTiming() {
-        return getGlobalSection().getLong("warnBefore", 20);
     }
 
     private boolean shouldIntegrateWithMagic() {

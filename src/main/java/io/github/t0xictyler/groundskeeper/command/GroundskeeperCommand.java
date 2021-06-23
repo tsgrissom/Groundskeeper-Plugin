@@ -38,23 +38,26 @@ public class GroundskeeperCommand implements TabExecutor {
     }
 
     public List<String> getHelp() {
+        String debugBoolStr = getController().isDebugging() ?
+                "&aEnabled" : "&cDisabled";
+
         return color(
                 " &8&m----------------------------------------",
                 "&8| &eGroundskeeper &7Command Help",
                 " &8&m----------------------------------------",
                 " &6> &7/gk ? &8- &3View this help info",
-                " &6> &7/gk reload &8- &3Reload the plugin",
-                " &6> &7/gk version &8- &3View plugin version",
+                format(" &6> &7/gk debug &8- &3Toggle debug mode &7(%s&7)", debugBoolStr),
                 " &6> &7/gk force &8- &3Force the ground to be cleared",
                 "   &9-a &8or &9--all",
                 "      &7Force all worlds to be cleared",
                 "   &9-cp &8or &9--clear-protected",
                 "      &7Bypass protected types",
                 " &6> &7/gk global &8- &3Modify global task settings",
-                " &6> &7/gk protected &8- &3List protected materials",
+                " &6> &7/gk load &8- &3Reload the plugin",
                 " &6> &7/gk protect <material> &8- &3Protect a material",
+                " &6> &7/gk protected &8- &3List protected materials",
                 " &6> &7/gk unprotect <material> &8- &3Unprotect a material",
-                " &6> &7/gk debug &8- &3Toggle debug mode"
+                " &6> &7/gk version &8- &3View plugin version"
         );
     }
 
@@ -276,7 +279,7 @@ public class GroundskeeperCommand implements TabExecutor {
         sender.sendMessage(color(format("&eGroundskeeper &6is protecting &c%d &6materials from being cleared", protectedTypes.size())));
 
         if (getController().isIntegratedWithMagic()) {
-            sender.sendMessage("&dGroundskeeper is protecting Magic wands");
+            sender.sendMessage(color("&dThe Magic integration is enabled. Groundskeeper will protect Magic wands from being cleared."));
         }
 
         return true;
