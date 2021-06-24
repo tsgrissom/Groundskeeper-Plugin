@@ -1,3 +1,4 @@
+# Whether the debugger is enabled or not
 debug: false
 
 # Global task settings
