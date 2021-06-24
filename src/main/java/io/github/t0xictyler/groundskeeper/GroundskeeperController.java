@@ -14,9 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GroundskeeperController {
@@ -29,11 +27,11 @@ public class GroundskeeperController {
     private int globalTaskId;
 
     @Getter
-    private Set<Material> protectedTypes;
+    private List<Material> protectedTypes;
 
     protected GroundskeeperController(GroundskeeperPlugin plugin) {
         this.plugin = plugin;
-        this.protectedTypes = new HashSet<>();
+        this.protectedTypes = new ArrayList<>();
 
         load();
     }
@@ -55,9 +53,13 @@ public class GroundskeeperController {
 
     private void loadProtectedTypes() {
         if (protectedTypes == null)
-            protectedTypes = new HashSet<>();
+            protectedTypes = new ArrayList<>();
 
-        for (String s : plugin.getConfig().getStringList("protectedTypes")) {
+        List<String> strList = plugin.getConfig().getStringList("protectedTypes");
+
+        Collections.sort(strList);
+
+        for (String s : strList) {
             Material m = Material.getMaterial(s);
 
             if (m == null) {

@@ -5,6 +5,10 @@ import io.github.t0xictyler.groundskeeper.task.CleanupTask;
 import io.github.t0xictyler.groundskeeper.task.CleanupWorldTask;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.hover.content.Content;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,10 +20,7 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.github.t0xictyler.groundskeeper.misc.Utils.color;
@@ -238,7 +239,7 @@ public class GroundskeeperCommand implements TabExecutor {
             sender.sendMessage(color(" &4&lX &cPlease specify a material to protect"));
         } else {
             String arg2 = args[1];
-            Material m = Material.getMaterial(arg2);
+            Material m = Material.getMaterial(arg2.toUpperCase());
 
             if (m == null) {
                 sender.sendMessage(color(format(" &4&lX &cUnknown material &4\"%s\"", arg2)));
@@ -255,7 +256,7 @@ public class GroundskeeperCommand implements TabExecutor {
             sender.sendMessage(color(" &4&lX &cPlease specify a material to unprotect"));
         } else {
             String arg2 = args[1];
-            Material m = Material.getMaterial(arg2);
+            Material m = Material.getMaterial(arg2.toUpperCase());
 
             if (m == null) {
                 sender.sendMessage(color(format(" &4&lX &cUnknown material &4\"%s\"", arg2)));
@@ -268,16 +269,52 @@ public class GroundskeeperCommand implements TabExecutor {
     }
 
     public boolean listProtected(CommandSender sender) {
-        Set<Material> protectedTypes = getController().getProtectedTypes();
+        List<Material> full = getController().getProtectedTypes();
+        List<Material> snip = full.subList(0, 6);
+        List<Material> remainder = full.subList(6, full.size());
 
-        for (Material m : getController().getProtectedTypes()) {
-            sender.sendMessage(color(format(" &6> &e%s", m.name())));
+        sender.sendMessage("");
+
+        if (sender instanceof ConsoleCommandSender) {
+            for (Material m : full) {
+                sender.sendMessage(color(format(" &7- &e%s", m.name())));
+            }
+        } else if (sender instanceof Player) {
+            Player p = (Player) sender;
+
+            for (Material m : snip) {
+                sender.sendMessage(color(format(" &7- &e%s", m.name())));
+            }
+
+            if (full.size() > 6) {
+                Content[] contents = new Content[remainder.size()];
+                int step = 0;
+
+                for (int i = 0; i < remainder.size(); i++) {
+                    String str = remainder.get(i).name() + ", ";
+
+                    if (step == 3) {
+                        str += "\n";
+                        step = 0;
+                    }
+
+                    contents[i] = new Text(str);
+                    step++;
+                }
+
+                ComponentBuilder comp = new ComponentBuilder(color(format(" &a&l+ &e&n... %d more entries (hover)", full.size() - snip.size())))
+                        .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, contents));
+                p.spigot().sendMessage(comp.create());
+            }
         }
 
-        sender.sendMessage(color(format("&eGroundskeeper &6is protecting &c%d &6materials from being cleared", protectedTypes.size())));
+        sender.sendMessage("");
+        sender.sendMessage(color("&5SUMMARY"));
+
+        sender.sendMessage(color(format(" &6* &7There are &b%d &7total protected materials", full.size())));
 
         if (getController().isIntegratedWithMagic()) {
-            sender.sendMessage(color("&dThe Magic integration is enabled. Groundskeeper will protect Magic wands from being cleared."));
+            sender.sendMessage(color(" &6* &7Groundskeeper integrated with &dMagic&7. Wands will not be cleared off the ground."));
         }
 
         return true;
