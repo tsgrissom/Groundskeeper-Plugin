@@ -1,6 +1,5 @@
 package io.github.t0xictyler.groundskeeper;
 
-import io.github.t0xictyler.groundskeeper.command.GroundskeeperCommand;
 import lombok.Getter;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.permissions.PermissionDefault;
@@ -19,6 +18,9 @@ import org.bukkit.plugin.java.annotation.plugin.Website;
 import org.bukkit.plugin.java.annotation.plugin.author.Author;
 import org.bukkit.plugin.java.annotation.plugin.author.Authors;
 
+/**
+ * TODO Cancellable event for plugins to listen for?
+ */
 @Plugin(name = "Groundskeeper", version = "1.0.0")
 @ApiVersion(ApiVersion.Target.v1_13)
 @Authors({

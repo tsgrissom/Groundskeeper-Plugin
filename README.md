@@ -2,7 +2,9 @@
 
 Groundskeeper is a Spigot plugin which serves to clear the ground of dropped items in a more intelligent way.
 
-### Integrations
+Groundskeeper will avoid removing more valuable items by default. It will 
+
+### Plugin Integrations
 
 * [NathanWolf's Magic plugin](https://www.spigotmc.org/resources/magic.1056/) - Groundskeeper will avoid clearing Magic wands from off the ground.
 
@@ -23,7 +25,7 @@ There's a bunch of configurable options in Groundskeeper. Click the link above t
 
 ### Commands
 
-> Do /gk ? to receive command help
+> Perform the command `/gk ?` to receive command help
 
 * `/gk debug` - Toggle debugger
 * `/gk force` - Force Groundskeeper to clean up

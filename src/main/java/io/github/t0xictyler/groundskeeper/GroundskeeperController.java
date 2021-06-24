@@ -122,7 +122,7 @@ public class GroundskeeperController {
         if (isDebugging()) {
             message = Utils.color(message);
 
-            Bukkit.getConsoleSender().sendMessage(String.format("[Groundskeeper] DEBUG: %s", message));
+            Bukkit.getConsoleSender().sendMessage(String.format("[GK] DEBUG: %s", message));
 
             for (Player p : Bukkit.getOnlinePlayers())
                 if (p.hasPermission("groundskeeper.debug"))

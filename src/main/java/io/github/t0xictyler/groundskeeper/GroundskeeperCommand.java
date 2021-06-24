@@ -1,7 +1,5 @@
-package io.github.t0xictyler.groundskeeper.command;
+package io.github.t0xictyler.groundskeeper;
 
-import io.github.t0xictyler.groundskeeper.GroundskeeperController;
-import io.github.t0xictyler.groundskeeper.GroundskeeperPlugin;
 import io.github.t0xictyler.groundskeeper.misc.Utils;
 import io.github.t0xictyler.groundskeeper.task.CleanupTask;
 import io.github.t0xictyler.groundskeeper.task.CleanupWorldTask;
@@ -45,7 +43,6 @@ public class GroundskeeperCommand implements TabExecutor {
                 " &8&m----------------------------------------",
                 "&8| &eGroundskeeper &7Command Help",
                 " &8&m----------------------------------------",
-                " &6> &7/gk ? &8- &3View this help info",
                 format(" &6> &7/gk debug &8- &3Toggle debug mode &7(%s&7)", debugBoolStr),
                 " &6> &7/gk force &8- &3Force the ground to be cleared",
                 "   &9-a &8or &9--all",
@@ -70,7 +67,7 @@ public class GroundskeeperCommand implements TabExecutor {
         return false;
     }
 
-    private void performCommand(CommandSender sender, String cmd) {
+    private void sudo(CommandSender sender, String cmd) {
         if (sender instanceof Player) {
             ((Player) sender).performCommand(cmd);
         } else if (sender instanceof ConsoleCommandSender) {
@@ -101,8 +98,9 @@ public class GroundskeeperCommand implements TabExecutor {
             plugin.getController().reload(sender);
         } else if (Utils.equalsAny(arg1, "help", "?")) {
             getHelp().forEach(sender::sendMessage);
-        } else if (Utils.equalsAny(arg1, "version", "v")) {
+        } else if (Utils.equalsAny(arg1, "version", "v", "info")) {
             sender.sendMessage(color(format(" &6> &eGroundskeeper &bv%s &7by &bT0xicTyler", plugin.getDescription().getVersion())));
+            sender.sendMessage(color(" &6> &bDo &a/gk &bto get started"));
         } else if (arg1.equalsIgnoreCase("force")) {
             return forceCleanup(sender, args);
         } else if (arg1.equalsIgnoreCase("protected")) {
@@ -174,9 +172,9 @@ public class GroundskeeperCommand implements TabExecutor {
                 }
             } else if (arg2.equalsIgnoreCase("toggle")) {
                 if (getController().isGlobalTaskEnabled()) {
-                    performCommand(sender, "gk g disable");
+                    sudo(sender, "gk g disable");
                 } else {
-                    performCommand(sender, "gk g enable");
+                    sudo(sender, "gk g enable");
                 }
             } else if (arg2.equalsIgnoreCase("enable")) {
                 if (getController().isGlobalTaskEnabled()) {
