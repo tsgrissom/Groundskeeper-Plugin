@@ -287,6 +287,8 @@ public class GroundskeeperCommand implements TabExecutor {
             }
 
             if (full.size() > 6) {
+                // TODO I kinda hate this. Review
+
                 Content[] contents = new Content[remainder.size()];
                 int step = 0;
 

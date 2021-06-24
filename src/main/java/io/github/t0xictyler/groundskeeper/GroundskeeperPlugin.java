@@ -20,6 +20,7 @@ import org.bukkit.plugin.java.annotation.plugin.author.Authors;
 
 /**
  * TODO Cancellable event for plugins to listen for?
+ * TODO Modes? Default would be the interval mode, a cap mode, etc.
  */
 @Plugin(name = "Groundskeeper", version = "1.0.0")
 @ApiVersion(ApiVersion.Target.v1_13)

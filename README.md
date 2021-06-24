@@ -2,7 +2,7 @@
 
 Groundskeeper is a Spigot plugin which serves to clear the ground of dropped items in a more intelligent way.
 
-Groundskeeper will avoid removing more valuable items by default. It will 
+Groundskeeper will avoid removing more valuable items by default.
 
 ### Plugin Integrations
 
@@ -25,7 +25,7 @@ There's a bunch of configurable options in Groundskeeper. Click the link above t
 
 ### Commands
 
-> Perform the command `/gk ?` to receive command help
+> Perform `/gk` to receive command help
 
 * `/gk debug` - Toggle debugger
 * `/gk force` - Force Groundskeeper to clean up
@@ -41,4 +41,5 @@ There's a bunch of configurable options in Groundskeeper. Click the link above t
 * `groundskeeper.*`
 * `groundskeeper.command` - Whether the player should be allowed to use /gk commands.
 * `groundskeeper.reload` - Whether the player should be able to use /gk reload.
+* `groundskeeper.debug` - Whether the player should be sent debug messages.  
 * `groundskeeper.notify` - Whether to send notifications to the player. Default is true. Negate this in your permission manager if you want.
