@@ -1,8 +1,6 @@
 # Groundskeeper
 
-Groundskeeper is a Spigot plugin which serves to clear the ground of dropped items in a more intelligent way.
-
-Groundskeeper will avoid removing more valuable items by default.
+Groundskeeper is a Spigot plugin for Potter-themed Minecraft game servers which serves to clear the ground of dropped item entitities in a more thoughtful manner, avoiding the removal of more valuable items by default.
 
 ### Plugin Integrations
 
